@@ -1,0 +1,34 @@
+b<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kljukua.com</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="profile-section">
+            <div class="profile-card">
+                <div class="profile-image">
+                    <img src="profile.png" alt="Profile Picture" id="profilePic">
+                </div>
+                <div class="profile-info">
+                    <h1 id="name">Your Name</h1>
+                    <p class="job-title" id="jobTitle">Your Current Position</p>
+                    <button class="contact-btn" onclick="openContact()">Contact</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="blog-section">
+            <h2 style="margin-bottom: 30px;">Latest Posts</h2>
+            <div class="posts-container" id="postsContainer">
+                <!-- Blog posts will be loaded dynamically -->
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

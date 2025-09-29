@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Post - kljukua.com</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .post-content {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .post-header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .post-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #000000;
+        }
+
+        .post-meta {
+            color: #666666;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #000000;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .post-body {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333333;
+            white-space: pre-line;
+        }
+
+        .post-body h1, .post-body h2, .post-body h3 {
+            color: #000000;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .post-body p {
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            text-align: center;
+            color: #666666;
+            font-size: 1.1rem;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+    <div class="post-content">
+        <a href="index.html" class="back-link">← Back to Blog</a>
+
+        <article id="postArticle">
+            <div class="error-message" id="errorMessage" style="display: none;">
+                <p>Post not found.</p>
+            </div>
+        </article>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', loadPost);
+
+        async function loadPost() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = urlParams.get('slug');
+
+            if (!slug) {
+                showError();
+                return;
+            }
+
+            try {
+                const response = await fetch('posts.json');
+                const posts = await response.json();
+                const post = posts.find(p => p.slug === slug);
+
+                if (!post) {
+                    showError();
+                    return;
+                }
+
+                displayPost(post);
+            } catch (error) {
+                console.error('Error loading post:', error);
+                showError();
+            }
+        }
+
+        function displayPost(post) {
+            document.getElementById('pageTitle').textContent = `${post.title} - kljukua.com`;
+
+            // Use HTML content if available (from web editor), otherwise use plain text content
+            const content = post.htmlContent || escapeHtml(post.content);
+
+            document.getElementById('postArticle').innerHTML = `
+                <header class="post-header">
+                    <h1 class="post-title">${escapeHtml(post.title)}</h1>
+                    <div class="post-meta">${formatDate(post.date)}</div>
+                </header>
+                <div class="post-body">${content}</div>
+            `;
+        }
+
+        function showError() {
+            document.getElementById('errorMessage').style.display = 'block';
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
